@@ -1,0 +1,63 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+storage/logs/*
+
+# Cache
+bootstrap/cache/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Testing
+tests
+phpunit.xml
+.phpunit.result.cache
+
+# Environment
+.env
+.env.example
+.env.local
+.env.testing
+
+# Vendor (will be installed in container)
+vendor/
+
+# Storage
+storage/app/*
+!storage/app/.gitkeep
+storage/framework/cache/*
+!storage/framework/cache/.gitkeep
+storage/framework/sessions/*
+!storage/framework/sessions/.gitkeep
+storage/framework/views/*
+!storage/framework/views/.gitkeep
+storage/logs/*
+!storage/logs/.gitkeep
