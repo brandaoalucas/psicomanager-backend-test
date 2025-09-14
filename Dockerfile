@@ -31,7 +31,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     bcmath
 
 # Install MongoDB extension
-RUN pecl install mongodb \
+RUN RUN pecl install mongodb-1.21.0 \
     && docker-php-ext-enable mongodb
 
 # Install Composer
