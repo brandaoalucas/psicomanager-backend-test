@@ -2,14 +2,12 @@
 
 namespace App\BoundedContext\Task\Application\Exception;
 
-use App\Common\Exception\BaseApplicationException;
+use App\Exceptions\AbstractIApplicationException;
 
-class TaskAccessDeniedException extends BaseApplicationException
+class TaskAccessDeniedException extends AbstractIApplicationException
 {
-    protected $message = 'Access denied to this task';
-
-    public function getLogLevel(): string
+    protected function message(): string
     {
-        return 'warning';
+        return "Task não encontrada para o ID passado.";
     }
 }

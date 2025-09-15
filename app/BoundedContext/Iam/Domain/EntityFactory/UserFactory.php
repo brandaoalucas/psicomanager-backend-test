@@ -2,11 +2,7 @@
 
 namespace App\BoundedContext\Iam\Domain\EntityFactory;
 
-use App\BoundedContext\Iam\Domain\Entity\BusinessPartner;
 use App\BoundedContext\Iam\Domain\Entity\User;
-use App\BoundedContext\Iam\Domain\Entity\UserProfile;
-use App\BoundedContext\Iam\Domain\Enum\UserType;
-use App\BoundedContext\Organization\Domain\Entity\SalesTeam;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;

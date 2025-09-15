@@ -3,7 +3,7 @@
 namespace Tests\Feature\BoundedContext\Task\Infrastructure\Inbound\Http\Controllers;
 
 use App\BoundedContext\Task\Infrastructure\Inbound\Http\Controllers\TaskController;
-use Tests\Feature\BoundedContext\Auth\Infrastructure\Inbound\Http\Controllers\TestsTaskController;
+use Tests\Feature\BoundedContext\Task\Infrastructure\Inbound\Http\Controllers\TestsTaskController;
 use Tests\TestCase;
 use Tests\Util\Testing;
 
@@ -18,6 +18,13 @@ class TaskControllerIntegrationTest extends TestCase
         $createdTaskId = $this->sendCreateTaskRequest($task);
 
         $this->verifyTaskHasBeenCreatedInDataBase($createdTaskId, $task);
+    }
+
+    public function test_should_paginate(): void
+    {
+        $existentTask = $this->createTask();
+
+        $this->sendPaginateGetRequest($existentTask);
     }
 }
 

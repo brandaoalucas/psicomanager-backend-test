@@ -10,4 +10,14 @@ class UserEmailAlreadyExistsException extends AbstractIApplicationException
     {
         return "Já existe um usuário cadastrado com o email :email.";
     }
+
+    public function getErrorCode(): string
+    {
+        return 'USER_EMAIL_EXISTS';
+    }
+
+    public function getHttpCode(): int
+    {
+        return 422;
+    }
 }

@@ -6,6 +6,7 @@ use App\BoundedContext\AuditLog\Application\Command\Create\CreateAuditLogCommand
 use App\BoundedContext\AuditLog\Application\Command\Create\CreateAuditLogCommandHandler;
 use App\BoundedContext\Task\Application\Command\Delete\DeleteTaskCommand;
 use App\BoundedContext\Task\Application\Exception\TaskNotFoundException;
+use App\BoundedContext\Task\Application\Exception\TaskAccessDeniedException;
 use App\BoundedContext\Task\Domain\Repository\TaskRepository;
 use App\BoundedContext\Iam\Domain\Entity\User;
 use App\Common\Enum\ReferenceType;
@@ -17,7 +18,7 @@ class DeleteTaskCommandHandler
         private CreateAuditLogCommandHandler $createAuditLogCommandHandler,
     ) {}
 
-    public function handle(DeleteTaskCommand $command): void
+    public function handle(DeleteTaskCommand $command): int
     {
         $task = $this->taskRepository->findById($command->taskId);
 

@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Auth\User;
+use App\BoundedContext\Iam\Domain\Entity\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
@@ -20,7 +20,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function login(array $fields = [])
     {
-        $this->authenticationUser ??= User::factory()->integration()->create($fields);
+        $this->authenticationUser ??= User::factory()->create($fields);
 
         return $this->actingAs($this->authenticationUser);
     }

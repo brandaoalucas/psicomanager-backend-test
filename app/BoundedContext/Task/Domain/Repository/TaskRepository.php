@@ -17,6 +17,13 @@ class TaskRepository
         return Task::create($fields);
     }
 
+    public function delete(int $id): int
+    {
+        return Task::query()
+            ->where("id", $id)
+            ->delete();
+    }
+
     public function findPaginated(
         int $userId,
         int $page = 1,
