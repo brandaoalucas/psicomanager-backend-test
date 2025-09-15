@@ -81,11 +81,9 @@ readonly class TaskController
         return $this->restartTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
     }
 
-    #[Delete("/{taskId}")]
-    public function destroy(int $taskId, DeleteTaskRequest $request): array
-    {
-        $this->deleteTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
-
-        return ['message' => 'Task deleted successfully'];
-    }
+    // #[Delete("/{taskId}")]
+    // public function destroy(int $taskId, DeleteTaskRequest $request): void
+    // {
+    //     return $this->deleteTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
+    // }
 }

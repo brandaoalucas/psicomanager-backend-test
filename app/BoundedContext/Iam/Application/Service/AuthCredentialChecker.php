@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BoundedContext\Auth\Application\Service;
+namespace App\BoundedContext\Iam\Application\Service;
 
 use App\BoundedContext\Iam\Domain\Entity\User;
 use App\BoundedContext\Iam\Domain\Repository\BusinessPartnerRepository;

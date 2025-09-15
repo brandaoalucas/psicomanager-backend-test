@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BoundedContext\Auth\Infrastructure\Inbound\Http\Controllers;
+namespace App\BoundedContext\Iam\Infrastructure\Inbound\Http\Controllers;
 
 use App\BoundedContext\Auth\Application\Command\LoginCommandHandler;
 use App\BoundedContext\Auth\Infrastructure\Inbound\Http\Requests\CreateSanctumTokenRequest;

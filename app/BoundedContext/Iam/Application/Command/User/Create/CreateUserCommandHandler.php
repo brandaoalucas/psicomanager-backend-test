@@ -18,7 +18,7 @@ class CreateUserCommandHandler
 
     public function handle(CreateUserCommand $command): User
     {
-        Logger::started(compact('comand'));
+        Logger::started(compact('command'));
 
         $this->validate($command);
 
@@ -27,11 +27,11 @@ class CreateUserCommandHandler
 
     public function validate(CreateUserCommand $command): void
     {
-        if (!$this->userRepository->existsByEmail($command->email)) {
+        if ($this->userRepository->existsByEmail($command->email)) {
             throw new UserEmailAlreadyExistsException(['email' => $command->email]);
         }
 
-        if (!$this->userRepository->existsByUsername($command->username)) {
+        if ($this->userRepository->existsByUsername($command->username)) {
             throw new UserUsernameAlreadyExistsException(['username' => $command->username]);
         }
     }

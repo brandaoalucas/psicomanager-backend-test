@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\BoundedContext\Auth\Infrastructure\Inbound\Http\Controllers;
+namespace Tests\Feature\BoundedContext\Task\Infrastructure\Inbound\Http\Controllers;
 
 use App\BoundedContext\Task\Domain\Entity\Task;
 

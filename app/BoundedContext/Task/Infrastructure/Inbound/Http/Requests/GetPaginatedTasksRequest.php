@@ -19,7 +19,7 @@ class GetPaginatedTasksRequest extends FormRequest
             'per_page'   => ['sometimes', 'integer', 'min:1', 'max:100'],
             'status'     => ['sometimes', 'string', 'in:pending,in_progress,completed'],
             'search'     => ['sometimes', 'string', 'max:255'],
-            'sort_by'    => ['sometimes', 'string', 'in:created_at,updated_at,title,status'],
+            'sort_by'    => ['sometimes', 'string', 'in:created_at,updated_at,title,status,user_name,days_since_created'],
             'sort_order' => ['sometimes', 'string', 'in:asc,desc'],
         ];
     }
