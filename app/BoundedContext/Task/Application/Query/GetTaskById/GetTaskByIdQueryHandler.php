@@ -21,6 +21,10 @@ readonly class GetTaskByIdQueryHandler
             throw new TaskNotFoundException();
         }
 
+        if ($task->user_id !== $query->loggedUser->id) {
+            throw new TaskAccessDeniedException();
+        }
+
         return $task;
     }
 }

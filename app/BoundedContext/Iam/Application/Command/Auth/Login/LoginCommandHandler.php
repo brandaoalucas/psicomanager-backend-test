@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BoundedContext\Auth\Application\Command;
+namespace App\BoundedContext\Iam\Application\Command\Auth\Login;
 
 use App\BoundedContext\Auth\Application\Service\AuthCredentialChecker;
 use App\BoundedContext\Auth\Application\Service\LoginAttemptService;

@@ -25,6 +25,10 @@ class DeleteTaskCommandHandler
             throw new TaskNotFoundException();
         }
 
+        if ($task->user_id !== $command->loggedUser->id) {
+            throw new TaskAccessDeniedException();
+        }
+
         $this->createAuditLog($task, $command->loggedUser);
 
         $this->taskRepository->delete($taskId);

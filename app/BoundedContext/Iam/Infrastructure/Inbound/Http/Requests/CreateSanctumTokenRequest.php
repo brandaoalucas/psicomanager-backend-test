@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BoundedContext\Auth\Infrastructure\Inbound\Http\Requests;
+namespace App\BoundedContext\Iam\Infrastructure\Inbound\Http\Requests;
 
 use App\BoundedContext\Iam\Application\Command\Auth\Login\LoginCommand;
 use Illuminate\Foundation\Http\FormRequest;
