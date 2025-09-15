@@ -4,11 +4,14 @@ namespace App\BoundedContext\Task\Application\Command\Start;
 
 use App\BoundedContext\AuditLog\Application\Command\Create\CreateAuditLogCommand;
 use App\BoundedContext\AuditLog\Application\Command\Create\CreateAuditLogCommandHandler;
+use App\BoundedContext\Task\Application\Exception\TaskAccessDeniedException;
 use App\BoundedContext\Task\Application\Exception\TaskNotFoundException;
 use App\BoundedContext\Task\Domain\Entity\Task;
+use App\BoundedContext\Task\Domain\Enum\TaskStatusEnum;
 use App\BoundedContext\Task\Domain\Repository\TaskRepository;
-use App\BoundedContext\Task\Domain\Enum\TaskStatus;
 use App\Common\Enum\ReferenceType;
+use App\Helpers\Logger\Logger;
+use Illuminate\Support\Facades\DB;
 
 class StartTaskCommandHandler
 {
@@ -17,24 +20,35 @@ class StartTaskCommandHandler
         private CreateAuditLogCommandHandler $createAuditLogCommandHandler,
     ) {}
 
-    public function handle(StartTaskCommand $command): Task
+    public function handle(StartTaskCommand $command): int
     {
+        Logger::started(compact('command'));
+
+        return DB::transaction(fn() => $this->start($command));
+    }
+
+    public function start(StartTaskCommand $command): int
+    {
+
         $task = $this->taskRepository->findById($command->taskId);
 
         if (!$task) {
             throw new TaskNotFoundException();
         }
 
-        $oldStatus = $task->status;
-        $task->status = TaskStatus::IN_PROGRESS;
-        $task->save();
+        if ($task->user_id !== $command->loggedUser->id) {
+            throw new TaskAccessDeniedException();
+        }
+
+        $oldStatus      = $task->status;
+        $task->status   = TaskStatusEnum::IN_PROGRESS;
 
         $this->createAuditLog($task, $command, $oldStatus);
 
-        return $task;
+        return $task->save();
     }
 
-    private function createAuditLog(Task $task, StartTaskCommand $command, TaskStatus $oldStatus): void
+    private function createAuditLog(Task $task, StartTaskCommand $command, TaskStatusEnum $oldStatus): void
     {
         $this->createAuditLogCommandHandler->handle(new CreateAuditLogCommand(
             userId: $command->loggedUser->id,
@@ -43,7 +57,7 @@ class StartTaskCommandHandler
             description: sprintf("Task '%s' foi iniciada (status alterado de %s para %s)",
                 $task->title,
                 $oldStatus->value,
-                TaskStatus::IN_PROGRESS->value
+                TaskStatusEnum::IN_PROGRESS->value
             ),
         ));
     }

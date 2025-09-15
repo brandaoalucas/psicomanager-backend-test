@@ -2,8 +2,10 @@
 
 namespace App\Common\Enum;
 
+use App\Common\Enum\HasFromSafely;
 enum ReferenceType: string
 {
+    use HasFromSafely;
     case TASK = 'TASK';
     case USER = 'USER';
 

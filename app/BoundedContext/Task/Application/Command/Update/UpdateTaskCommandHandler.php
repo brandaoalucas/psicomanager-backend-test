@@ -2,6 +2,7 @@
 
 namespace App\BoundedContext\Task\Application\Command\Update;
 
+use App\BoundedContext\Task\Application\Exception\TaskAccessDeniedException;
 use App\BoundedContext\Task\Application\Exception\TaskNotFoundException;
 use App\BoundedContext\AuditLog\Application\Command\Create\CreateAuditLogCommand;
 use App\BoundedContext\AuditLog\Application\Command\Create\CreateAuditLogCommandHandler;
@@ -9,6 +10,7 @@ use App\BoundedContext\Task\Domain\Entity\Task;
 use App\BoundedContext\Task\Domain\Repository\TaskRepository;
 use App\Common\Enum\ReferenceType;
 use App\Helpers\Logger\Logger;
+use Illuminate\Support\Facades\DB;
 
 readonly class UpdateTaskCommandHandler
 {
@@ -17,15 +19,25 @@ readonly class UpdateTaskCommandHandler
         private CreateAuditLogCommandHandler $createAuditLogCommandHandler,
     ) {}
 
-    public function handle (UpdateTaskCommand $command): Task
+    public function handle (UpdateTaskCommand $command): int
     {
+        Logger::started(compact('command'));
+
+        return DB::transaction(fn() => $this->update($command));
+    }
+
+    private function update(UpdateTaskCommand $command): int
+    {
+
         $task = $this->taskRepository->findById($command->id);
 
         if (!$task) {
             throw new TaskNotFoundException();
         }
 
-        $this->createAuditLog($task, $command);
+        if ($task->user_id !== $command->loggedUser->id) {
+            throw new TaskAccessDeniedException();
+        }
 
         $task->fill([
             'title' => $command->title,
@@ -33,12 +45,9 @@ readonly class UpdateTaskCommandHandler
             'updated_by' => $command->loggedUser->id,
         ]);
 
-        $task->save();
+        $this->createAuditLog($task, $command);
 
-
-        Logger::finished(compact('command'));
-
-        return $task;
+        return $task->save();
     }
 
     private function createAuditLog(Task $task, UpdateTaskCommand $command): void

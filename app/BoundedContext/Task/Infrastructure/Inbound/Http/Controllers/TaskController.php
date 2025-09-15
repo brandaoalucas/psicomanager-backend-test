@@ -58,25 +58,25 @@ readonly class TaskController
     }
 
     #[Put("/{taskId}")]
-    public function update(int $taskId, UpdateTaskRequest $request): Task
+    public function update(int $taskId, UpdateTaskRequest $request): int
     {
         return $this->updateTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
     }
 
     #[Patch("/{taskId}/complete")]
-    public function complete(int $taskId, CompleteTaskRequest $request): Task
+    public function complete(int $taskId, CompleteTaskRequest $request): int
     {
         return $this->completeTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
     }
 
     #[Patch("/{taskId}/start")]
-    public function start(int $taskId, StartTaskRequest $request): Task
+    public function start(int $taskId, StartTaskRequest $request): int
     {
         return $this->startTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
     }
 
     #[Patch("/{taskId}/restart")]
-    public function restart(int $taskId, RestartTaskRequest $request): Task
+    public function restart(int $taskId, RestartTaskRequest $request): int
     {
         return $this->restartTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
     }

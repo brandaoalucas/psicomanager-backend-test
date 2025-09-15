@@ -4,11 +4,14 @@ namespace App\BoundedContext\Task\Application\Command\Restart;
 
 use App\BoundedContext\AuditLog\Application\Command\Create\CreateAuditLogCommand;
 use App\BoundedContext\AuditLog\Application\Command\Create\CreateAuditLogCommandHandler;
+use App\BoundedContext\Task\Application\Exception\TaskAccessDeniedException;
 use App\BoundedContext\Task\Application\Exception\TaskNotFoundException;
 use App\BoundedContext\Task\Domain\Entity\Task;
+use App\BoundedContext\Task\Domain\Enum\TaskStatusEnum;
 use App\BoundedContext\Task\Domain\Repository\TaskRepository;
-use App\BoundedContext\Task\Domain\Enum\TaskStatus;
 use App\Common\Enum\ReferenceType;
+use App\Helpers\Logger\Logger;
+use Illuminate\Support\Facades\DB;
 
 class RestartTaskCommandHandler
 {
@@ -17,7 +20,14 @@ class RestartTaskCommandHandler
         private CreateAuditLogCommandHandler $createAuditLogCommandHandler,
     ) {}
 
-    public function handle(RestartTaskCommand $command): Task
+    public function handle(RestartTaskCommand $command): int
+    {
+        Logger::started(compact('command'));
+
+        return DB::transaction(fn() => $this->restart($command));
+    }
+
+    public function restart(RestartTaskCommand $command): int
     {
         $task = $this->taskRepository->findById($command->taskId);
 
@@ -25,16 +35,20 @@ class RestartTaskCommandHandler
             throw new TaskNotFoundException();
         }
 
-        $oldStatus = $task->status;
-        $task->status = TaskStatus::PENDING;
-        $task->save();
+        if ($task->user_id !== $command->loggedUser->id) {
+            throw new TaskAccessDeniedException();
+        }
+
+
+        $task->status   = TaskStatusEnum::PENDING;
+        $oldStatus      = $task->status;
 
         $this->createAuditLog($task, $command, $oldStatus);
 
-        return $task;
+        return $task->save();
     }
 
-    private function createAuditLog(Task $task, RestartTaskCommand $command, TaskStatus $oldStatus): void
+    private function createAuditLog(Task $task, RestartTaskCommand $command, TaskStatusEnum $oldStatus): void
     {
         $this->createAuditLogCommandHandler->handle(new CreateAuditLogCommand(
             userId: $command->loggedUser->id,
@@ -43,7 +57,7 @@ class RestartTaskCommandHandler
             description: sprintf("Task '%s' foi reaberta (status alterado de %s para %s)",
                 $task->title,
                 $oldStatus->value,
-                TaskStatus::PENDING->value
+                TaskStatusEnum::PENDING->value
             ),
         ));
     }
