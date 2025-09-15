@@ -2,19 +2,25 @@
 
 namespace App\BoundedContext\Task\Application\Query\GetPaginatedTasks;
 
-
-use App\BoundedContext\Task\Application\Query\GetPaginatedTasks\GetPaginatedTasksQuery;
-use App\BoundedContext\Task\Domain\Entity\Task;
 use App\BoundedContext\Task\Domain\Repository\TaskRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-readonly class GetPaginatedTasksQueryHandler
+class GetPaginatedTasksQueryHandler
 {
     public function __construct(
         private TaskRepository $taskRepository,
     ) {}
 
-    public function handle(GetPaginatedTasksQuery $query): Task
+    public function handle(GetPaginatedTasksQuery $query): LengthAwarePaginator
     {
-        return $this->taskRepository->findById($query->loggedUser->id);
+        return $this->taskRepository->findPaginated(
+            userId: $query->loggedUser->id,
+            page: $query->page,
+            perPage: $query->perPage,
+            status: $query->status,
+            search: $query->search,
+            sortBy: $query->sortBy,
+            sortOrder: $query->sortOrder,
+        );
     }
 }
