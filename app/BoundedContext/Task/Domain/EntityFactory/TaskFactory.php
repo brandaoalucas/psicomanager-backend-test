@@ -4,8 +4,8 @@ namespace App\BoundedContext\Task\Domain\EntityFactory;
 
 use App\BoundedContext\Iam\Domain\Entity\User;
 use App\BoundedContext\Task\Domain\Entity\Task;
+use App\BoundedContext\Task\Domain\Enum\TaskStatusEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use TaskStatus;
 
 class TaskFactory extends Factory
 {
@@ -22,7 +22,7 @@ class TaskFactory extends Factory
         return [
             'title'         => $this->faker->title(),
             'description'   => $this->faker->text(),
-            'status'        => $this->faker->randomElement(TaskStatus::cases()),
+            'status'        => $this->faker->randomElement(TaskStatusEnum::cases()),
         ];
     }
 

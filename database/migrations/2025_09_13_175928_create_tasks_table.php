@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("user_id");
             $table->string('title');
             $table->text('description');
             $table->string('status', 50)->default('PENDING');
             $table->integer('priority')->default(1);
-            $table->timestamp('due_date');
             $table->timestamps();
             $table->softDeletes();
         });

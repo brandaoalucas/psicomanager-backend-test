@@ -24,7 +24,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Spatie\RouteAttributes\Attributes\{Delete, Get, Middleware, Post, Prefix, Put, Patch};
 
 #[Middleware("auth:sanctum")]
-#[Prefix("tasks")]
+#[Prefix("/tasks")]
 readonly class TaskController
 {
     public function __construct(
@@ -81,9 +81,9 @@ readonly class TaskController
         return $this->restartTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
     }
 
-    // #[Delete("/{taskId}")]
-    // public function destroy(int $taskId, DeleteTaskRequest $request): void
-    // {
-    //     return $this->deleteTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
-    // }
+    #[Delete("/{taskId}")]
+    public function destroy(int $taskId, DeleteTaskRequest $request): int
+    {
+        return $this->deleteTaskCommandHandler->handle(command: $request->toCommand(taskId: $taskId));
+    }
 }

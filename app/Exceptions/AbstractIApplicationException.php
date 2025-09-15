@@ -31,4 +31,20 @@ abstract class AbstractIApplicationException extends Exception implements IAppli
     {
         return $this->args;
     }
+
+    /**
+     * Default error code - should be overridden by specific exceptions
+     */
+    public function getErrorCode(): string
+    {
+        return 'APPLICATION_ERROR';
+    }
+
+    /**
+     * Default HTTP code - should be overridden by specific exceptions
+     */
+    public function getHttpCode(): int
+    {
+        return 400; // Bad Request as default
+    }
 }
