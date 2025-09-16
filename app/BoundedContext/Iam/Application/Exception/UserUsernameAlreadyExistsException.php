@@ -10,4 +10,14 @@ class UserUsernameAlreadyExistsException extends AbstractIApplicationException
     {
         return "Já existe um usuário cadastrado com o username :username.";
     }
+
+    public function getErrorCode(): string
+    {
+        return 'USER_USERNAME_EXISTS';
+    }
+
+    public function getHttpCode(): int
+    {
+        return 409;
+    }
 }

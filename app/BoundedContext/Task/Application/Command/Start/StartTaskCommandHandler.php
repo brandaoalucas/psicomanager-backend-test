@@ -24,12 +24,23 @@ class StartTaskCommandHandler
     {
         Logger::started(compact('command'));
 
-        return DB::transaction(fn() => $this->start($command));
+        $task = $this->validate($command);
+
+        return DB::transaction(fn() => $this->start(task: $task, command: $command));
     }
 
-    public function start(StartTaskCommand $command): int
+    public function start(Task $task, StartTaskCommand $command): int
     {
+        $oldStatus = $task->status;
+        $task->status = TaskStatusEnum::IN_PROGRESS;
 
+        $this->createAuditLog($task, $command, $oldStatus);
+
+        return $task->save();
+    }
+
+    private function validate(StartTaskCommand $command): Task
+    {
         $task = $this->taskRepository->findById($command->taskId);
 
         if (!$task) {
@@ -40,12 +51,7 @@ class StartTaskCommandHandler
             throw new TaskAccessDeniedException();
         }
 
-        $oldStatus      = $task->status;
-        $task->status   = TaskStatusEnum::IN_PROGRESS;
-
-        $this->createAuditLog($task, $command, $oldStatus);
-
-        return $task->save();
+        return $task;
     }
 
     private function createAuditLog(Task $task, StartTaskCommand $command, TaskStatusEnum $oldStatus): void

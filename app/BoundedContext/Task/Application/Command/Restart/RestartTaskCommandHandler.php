@@ -24,10 +24,22 @@ class RestartTaskCommandHandler
     {
         Logger::started(compact('command'));
 
-        return DB::transaction(fn() => $this->restart($command));
+        $task = $this->validate($command);
+
+        return DB::transaction(fn() => $this->restart(task: $task, command: $command));
     }
 
-    public function restart(RestartTaskCommand $command): int
+    public function restart(Task $task, RestartTaskCommand $command): int
+    {
+        $oldStatus = $task->status;
+        $task->status = TaskStatusEnum::PENDING;
+
+        $this->createAuditLog($task, $command, $oldStatus);
+
+        return $task->save();
+    }
+
+    private function validate(RestartTaskCommand $command): Task
     {
         $task = $this->taskRepository->findById($command->taskId);
 
@@ -39,13 +51,7 @@ class RestartTaskCommandHandler
             throw new TaskAccessDeniedException();
         }
 
-
-        $task->status   = TaskStatusEnum::PENDING;
-        $oldStatus      = $task->status;
-
-        $this->createAuditLog($task, $command, $oldStatus);
-
-        return $task->save();
+        return $task;
     }
 
     private function createAuditLog(Task $task, RestartTaskCommand $command, TaskStatusEnum $oldStatus): void

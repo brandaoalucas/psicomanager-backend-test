@@ -7,8 +7,8 @@ use App\BoundedContext\AuditLog\Application\Command\Create\CreateAuditLogCommand
 use App\BoundedContext\Task\Application\Command\Delete\DeleteTaskCommand;
 use App\BoundedContext\Task\Application\Exception\TaskNotFoundException;
 use App\BoundedContext\Task\Application\Exception\TaskAccessDeniedException;
+use App\BoundedContext\Task\Domain\Entity\Task;
 use App\BoundedContext\Task\Domain\Repository\TaskRepository;
-use App\BoundedContext\Iam\Domain\Entity\User;
 use App\Common\Enum\ReferenceType;
 use App\Helpers\Logger\Logger;
 use Illuminate\Support\Facades\DB;
@@ -24,10 +24,19 @@ class DeleteTaskCommandHandler
     {
         Logger::started(compact('command'));
 
-        return DB::transaction(fn() => $this->delete($command));
+        $task = $this->validate($command);
+
+        return DB::transaction(fn() => $this->delete(task: $task, command: $command));
     }
 
-    private function delete(DeleteTaskCommand $command): int
+    public function delete(Task $task, DeleteTaskCommand $command): int
+    {
+        $this->createAuditLog($task, $command);
+
+        return $task->delete();
+    }
+
+    private function validate(DeleteTaskCommand $command): Task
     {
         $task = $this->taskRepository->findById($command->taskId);
 
@@ -39,15 +48,14 @@ class DeleteTaskCommandHandler
             throw new TaskAccessDeniedException();
         }
 
-        $this->createAuditLog($task, $command->loggedUser);
-
-        return $task->delete();
+        return $task;
     }
-    private function createAuditLog($task, User $loggedUser): void
+
+    private function createAuditLog(Task $task, DeleteTaskCommand $command): void
     {
         $this->createAuditLogCommandHandler->handle(new CreateAuditLogCommand(
-            userId: $loggedUser->id,
-            referenceId: $task->id,
+            userId: $command->loggedUser->id,
+            referenceId: $command->taskId,
             referenceType: ReferenceType::TASK,
             description: sprintf("Task '%s' foi excluída", $task->title),
         ));
