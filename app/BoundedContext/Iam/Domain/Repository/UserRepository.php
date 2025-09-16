@@ -21,7 +21,6 @@ class UserRepository
     {
         return User::query()
             ->where("email", $email)
-            ->where("is_active", true)
             ->first();
     }
 

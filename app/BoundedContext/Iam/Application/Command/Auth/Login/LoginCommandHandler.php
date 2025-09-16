@@ -37,6 +37,7 @@ class LoginCommandHandler
     private function verifyUser(LoginCommand $command, string $ip): string
     {
         $user = $this->authCredentialChecker->verify($command->email, $command->password);
+
         if (! $user) {
 
             LoginAttemptService::increment($ip);
