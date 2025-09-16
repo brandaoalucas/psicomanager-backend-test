@@ -46,7 +46,7 @@ class CreateAuditLogCommandHandler
         ];
     }
 
-    private function create(array $fields): int
+    private function create(array $fields): AuditLog
     {
         return AuditLog::create($fields);
     }

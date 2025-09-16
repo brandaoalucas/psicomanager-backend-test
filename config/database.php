@@ -26,11 +26,27 @@ return [
             ]) : [],
         ],
 
-        // Configuração MongoDB para Jenssegers
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('MONGODB_URI', 'mongodb://localhost:27017'),
-            'database' => env('MONGODB_DATABASE', 'laravel_app'),
+            'host' => env('MONGO_DB_HOST', 'mongo'),
+            'port' => env('MONGO_DB_PORT', 27017),
+            'database' => env('MONGO_DB_DATABASE', 'audit_logs_db'),
+            'username' => env('MONGO_DB_USERNAME', 'admin'),
+            'password' => env('MONGO_DB_PASSWORD', 'secret'),
+            'options' => [
+                'authSource' => env('MONGO_DB_AUTH_SOURCE', 'admin'),
+            ],
+        ],
+        'mongodb_test' => [
+            'driver' => 'mongodb',
+            'host' => env('MONGO_DB_HOST_TEST', 'mongo_test'),
+            'port' => env('MONGO_DB_PORT_TEST', 27017),
+            'database' => env('MONGO_DB_DATABASE_TEST', 'audit_logs_db_test'),
+            'username' => env('MONGO_DB_USERNAME_TEST', 'admin_test'),
+            'password' => env('MONGO_DB_PASSWORD_TEST', 'secret_test'),
+            'options' => [
+                'authSource' => env('MONGO_DB_AUTH_SOURCE_TEST', 'admin_test'),
+            ],
         ],
     ],
 
