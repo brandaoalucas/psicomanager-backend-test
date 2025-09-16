@@ -20,6 +20,8 @@ class GetPaginatedAuditLogsRequest extends FormRequest
             'user_id' => 'sometimes|integer',
             'action' => 'sometimes|string',
             'reference_type' => 'sometimes|string',
+            'reference_id' => 'sometimes|integer',
+            'user_name' => 'sometimes|string',
             'limit' => 'sometimes|integer|min:1|max:100',
         ];
     }
@@ -31,6 +33,8 @@ class GetPaginatedAuditLogsRequest extends FormRequest
             userName     : $this->input("user_name"),
             referenceType: ReferenceType::fromSafely($this->input("reference_type")),
             referenceId  : $this->input("reference_id"),
+            userId       : $this->input("user_id"),
+            action       : $this->input("action"),
         );
     }
 }
