@@ -12,6 +12,7 @@ use App\BoundedContext\Iam\Domain\Entity\User;
 use App\Common\Enum\ReferenceType;
 use App\Helpers\Logger\Logger;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class CreateUserCommandHandler
 {
@@ -35,7 +36,7 @@ class CreateUserCommandHandler
             'name' => $command->name,
             'email' => $command->email,
             'username' => $command->username,
-            'password' => $command->password
+            'password' => Hash::make($command->password)
         ]);
 
         $this->createAuditLog($user, $command);

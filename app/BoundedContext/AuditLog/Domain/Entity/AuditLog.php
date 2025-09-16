@@ -16,6 +16,8 @@ use MongoDB\Laravel\Eloquent\Model;
  */
 class AuditLog extends Model
 {
+    protected $connection = 'mongodb';
+
     public $fillable = [
         'id',
         'reference_type',

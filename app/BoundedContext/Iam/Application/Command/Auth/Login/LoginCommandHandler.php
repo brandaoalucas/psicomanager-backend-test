@@ -2,8 +2,8 @@
 
 namespace App\BoundedContext\Iam\Application\Command\Auth\Login;
 
-use App\BoundedContext\Auth\Application\Service\AuthCredentialChecker;
-use App\BoundedContext\Auth\Application\Service\LoginAttemptService;
+use App\BoundedContext\Iam\Application\Service\AuthCredentialChecker;
+use App\BoundedContext\Iam\Application\Service\LoginAttemptService;
 use App\BoundedContext\Iam\Application\Command\Auth\Login\LoginCommand;
 use Illuminate\Validation\ValidationException;
 
@@ -17,7 +17,7 @@ class LoginCommandHandler
     {
         $ip = request()->ip();
 
-        $this->verifyIsBlockedAttempt($ip);
+        // $this->verifyIsBlockedAttempt($ip);
 
         $token = $this->verifyUser($command, $ip);
 
@@ -38,6 +38,7 @@ class LoginCommandHandler
     {
         $user = $this->authCredentialChecker->verify($command->email, $command->password);
         if (! $user) {
+
             LoginAttemptService::increment($ip);
 
             $message = ['email' => ['O email e/ou senha não são válidos!']];
