@@ -17,7 +17,11 @@ readonly class GetPaginatedAuditLogsQueryHandler
         $auditLogsQuery = AuditLog::query();
 
         if ($query->id) {
-            $auditLogsQuery->where('id', $query->id);
+            $auditLogsQuery->where('_id', $query->id);
+        }
+
+        if ($query->userId) {
+            $auditLogsQuery->where('user_id', $query->userId);
         }
 
         if ($query->referenceType) {
@@ -30,6 +34,10 @@ readonly class GetPaginatedAuditLogsQueryHandler
 
         if ($query->userName) {
             $auditLogsQuery->where('user_name', 'like', "%{$query->userName}%");
+        }
+
+        if ($query->action) {
+            $auditLogsQuery->where('action', $query->action);
         }
 
         return $auditLogsQuery

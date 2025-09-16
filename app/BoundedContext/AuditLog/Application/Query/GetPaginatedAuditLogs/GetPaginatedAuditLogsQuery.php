@@ -10,9 +10,11 @@ use JetBrains\PhpStorm\Immutable;
 class GetPaginatedAuditLogsQuery extends Query
 {
     public function __construct(
-        public readonly ?int $id,
+        public readonly ?string $id,
         public readonly ?string $userName,
         public readonly ?ReferenceType $referenceType,
         public readonly ?int $referenceId,
+        public readonly ?int $userId,
+        public readonly ?string $action,
     ) {}
 }
