@@ -11,10 +11,14 @@ down:
 	docker compose down
 
 build:
+	cp .env.example .env
 	docker compose build --no-cache
 
 logs:
 	docker compose logs -f app
+
+env:
+	cp .env.example .env
 
 # ============================================
 # APPLICATION COMMANDS
