@@ -3,7 +3,6 @@
 namespace App\BoundedContext\Iam\Application\Service;
 
 use App\BoundedContext\Iam\Domain\Entity\User;
-use App\BoundedContext\Iam\Domain\Repository\BusinessPartnerRepository;
 use App\BoundedContext\Iam\Domain\Repository\UserRepository;
 use Illuminate\Support\Facades\Hash;
 

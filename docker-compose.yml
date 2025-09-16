@@ -1,9 +1,6 @@
 version: "3.8"
 
 services:
-    # ===============================================
-    # APPLICATION SERVICE
-    # ===============================================
     app:
         build:
             context: .
@@ -14,39 +11,25 @@ services:
             - ./:/var/www
             - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
         environment:
-            - APP_NAME=${APP_NAME}
-            - APP_ENV=${APP_ENV}
-            - APP_DEBUG=${APP_DEBUG}
-            - APP_URL=${APP_URL}
-            - APP_KEY=${APP_KEY}
-            - LOG_CHANNEL=${LOG_CHANNEL}
-            - LOG_LEVEL=${LOG_LEVEL}
-            # MySQL Variables
-            - DB_CONNECTION=${DB_CONNECTION}
-            - DB_HOST=${DB_HOST}
-            - DB_PORT=${DB_PORT}
-            - DB_DATABASE=${DB_DATABASE}
-            - DB_USERNAME=${DB_USERNAME}
-            - DB_PASSWORD=${DB_PASSWORD}
-            # MongoDB Variables
-            - MONGO_DB_CONNECTION=${MONGO_DB_CONNECTION}
-            - MONGO_DB_HOST=${MONGO_DB_HOST}
-            - MONGO_DB_PORT=${MONGO_DB_PORT}
-            - MONGO_DB_DATABASE=${MONGO_DB_DATABASE}
-            - MONGO_DB_USERNAME=${MONGO_DB_USERNAME}
-            - MONGO_DB_PASSWORD=${MONGO_DB_PASSWORD}
-            # Cache & Session
-            - CACHE_DRIVER=${CACHE_DRIVER}
-            - SESSION_DRIVER=${SESSION_DRIVER}
-            - SESSION_LIFETIME=${SESSION_LIFETIME}
-            # Mail
-            - MAIL_MAILER=${MAIL_MAILER}
-            - MAIL_HOST=${MAIL_HOST}
-            - MAIL_PORT=${MAIL_PORT}
-            - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
-            - MAIL_FROM_NAME=${MAIL_FROM_NAME}
-            # Sanctum
-            - SANCTUM_STATEFUL_DOMAINS=${SANCTUM_STATEFUL_DOMAINS}
+            # variáveis do Laravel (vem do .env)
+            APP_NAME: ${APP_NAME}
+            APP_ENV: ${APP_ENV}
+            APP_DEBUG: ${APP_DEBUG}
+            APP_URL: ${APP_URL}
+            APP_KEY: ${APP_KEY}
+
+            # MySQL
+            DB_CONNECTION: ${DB_CONNECTION}
+            DB_HOST: ${DB_HOST}
+            DB_PORT: ${DB_PORT}
+            DB_DATABASE: ${DB_DATABASE}
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
+
+            # MongoDB → usa apenas MONGODB_URI e MONGODB_DATABASE
+            MONGODB_URI: ${MONGODB_URI}
+            MONGODB_DATABASE: ${MONGODB_DATABASE}
+
         env_file:
             - .env
         depends_on:
@@ -58,9 +41,6 @@ services:
             - task-management-network
         restart: unless-stopped
 
-    # ===============================================
-    # MYSQL DATABASE SERVICE
-    # ===============================================
     mysql:
         image: mysql:8.0
         environment:
@@ -92,9 +72,6 @@ services:
             retries: 10
             interval: 30s
 
-    # ===============================================
-    # MONGODB DATABASE SERVICE
-    # ===============================================
     mongo:
         image: mongo:7.0
         environment:
@@ -116,9 +93,6 @@ services:
             retries: 5
             start_period: 40s
 
-    # ===============================================
-    # MONGO EXPRESS (Admin Interface)
-    # ===============================================
     mongo-express:
         image: mongo-express:1.0.2
         environment:
@@ -136,18 +110,12 @@ services:
             - task-management-network
         restart: unless-stopped
 
-# ===============================================
-# VOLUMES
-# ===============================================
 volumes:
     mysql_data:
         driver: local
     mongo_data:
         driver: local
 
-# ===============================================
-# NETWORKS
-# ===============================================
 networks:
     task-management-network:
         driver: bridge
