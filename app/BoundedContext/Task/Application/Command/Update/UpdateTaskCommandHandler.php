@@ -47,7 +47,6 @@ readonly class UpdateTaskCommandHandler
     private function validate(UpdateTaskCommand $command): Task
     {
         $task = $this->taskRepository->findById($command->id);
-
         if (!$task) {
             throw new TaskNotFoundException();
         }
