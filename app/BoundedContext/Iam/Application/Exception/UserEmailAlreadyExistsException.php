@@ -18,6 +18,6 @@ class UserEmailAlreadyExistsException extends AbstractIApplicationException
 
     public function getHttpCode(): int
     {
-        return 422;
+        return 409;
     }
 }

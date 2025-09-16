@@ -19,16 +19,33 @@ readonly class UpdateTaskCommandHandler
         private CreateAuditLogCommandHandler $createAuditLogCommandHandler,
     ) {}
 
-    public function handle (UpdateTaskCommand $command): int
+    public function handle(UpdateTaskCommand $command): int
     {
         Logger::started(compact('command'));
 
-        return DB::transaction(fn() => $this->update($command));
+        $task = $this->validate($command);
+
+        return DB::transaction(fn() => $this->update(task: $task, command: $command));
     }
 
-    private function update(UpdateTaskCommand $command): int
+    public function update(Task $task, UpdateTaskCommand $command): int
     {
+        $oldTitle = $task->title;
+        $oldDescription = $task->description;
 
+        $task->fill([
+            'title' => $command->title,
+            'description' => $command->description,
+            'updated_by' => $command->loggedUser->id,
+        ]);
+
+        $this->createAuditLog($task, $command, $oldTitle, $oldDescription);
+
+        return $task->save();
+    }
+
+    private function validate(UpdateTaskCommand $command): Task
+    {
         $task = $this->taskRepository->findById($command->id);
 
         if (!$task) {
@@ -39,27 +56,20 @@ readonly class UpdateTaskCommandHandler
             throw new TaskAccessDeniedException();
         }
 
-        $task->fill([
-            'title' => $command->title,
-            'description' => $command->description,
-            'updated_by' => $command->loggedUser->id,
-        ]);
-
-        $this->createAuditLog($task, $command);
-
-        return $task->save();
+        return $task;
     }
 
-    private function createAuditLog(Task $task, UpdateTaskCommand $command): void
+    private function createAuditLog(Task $task, UpdateTaskCommand $command, string $oldTitle, string $oldDescription): void
     {
         $this->createAuditLogCommandHandler->handle(new CreateAuditLogCommand(
             userId: $command->loggedUser->id,
             referenceId: $command->id,
             referenceType: ReferenceType::TASK,
-            description: sprintf("O campo título foi alterado de %s para %s. O campo descrição foi alterado de %s para %s.",
+            description: sprintf("Task '%s' foi atualizada (título alterado de '%s' para '%s', descrição alterada de '%s' para '%s')",
                 $task->title,
+                $oldTitle,
                 $command->title,
-                $task->description,
+                $oldDescription,
                 $command->description,
             ),
         ));
