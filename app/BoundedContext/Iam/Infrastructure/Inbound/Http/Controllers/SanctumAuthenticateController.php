@@ -2,9 +2,8 @@
 
 namespace App\BoundedContext\Iam\Infrastructure\Inbound\Http\Controllers;
 
-use App\BoundedContext\Auth\Application\Command\LoginCommandHandler;
-use App\BoundedContext\Auth\Infrastructure\Inbound\Http\Requests\CreateSanctumTokenRequest;
-use Illuminate\Validation\ValidationException;
+use App\BoundedContext\Iam\Application\Command\Auth\Login\LoginCommandHandler;
+use App\BoundedContext\Iam\Infrastructure\Inbound\Http\Requests\CreateSanctumTokenRequest;
 use Spatie\RouteAttributes\Attributes\Post;
 
 class SanctumAuthenticateController
@@ -13,9 +12,6 @@ class SanctumAuthenticateController
         private readonly LoginCommandHandler $loginCommandHandler,
     ) {}
 
-    /**
-     * @throws ValidationException
-     */
     #[Post('/sanctum/token')]
     public function createToken(CreateSanctumTokenRequest $request): array
     {

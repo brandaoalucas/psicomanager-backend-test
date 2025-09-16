@@ -4,7 +4,8 @@ namespace App\BoundedContext\AuditLog\Domain\Entity;
 
 use App\BoundedContext\AuditLog\Domain\EntityFactory\AuditLogFactory;
 use App\Common\Enum\ReferenceType;
-use Illuminate\Database\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
+
 
 /**
  * @property int $id

@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Install system dependencies (alfabeticamente ordenado para SonarQube)
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     git \
@@ -31,8 +31,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     xml \
     zip
 
-# Install MongoDB extension (versão específica compatível)
-RUN pecl install mongodb-1.20.0 \
+# Install MongoDB extension (versão mais recente)
+RUN pecl install mongodb \
     && docker-php-ext-enable mongodb
 
 # Install Composer
@@ -42,10 +42,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 # Copy composer files first (for better caching)
-COPY composer.json composer.lock ./
+COPY composer.json ./
 
-# Install dependencies with platform requirements ignored (temporário)
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-req=ext-mongodb
+# Install dependencies (sem ignorar platform requirements)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Copy application files
 COPY . /var/www

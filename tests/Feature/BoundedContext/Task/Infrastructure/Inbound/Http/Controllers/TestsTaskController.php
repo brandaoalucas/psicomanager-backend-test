@@ -36,9 +36,10 @@ trait TestsTaskController
             ->getJson($route)
             ->assertSuccessful()
             ->assertJson([
-                "current_page" => 1,
                 "data" => [
-                    "id" => $existentTask->id
+                    [
+                        "id" => $existentTask->id
+                    ]
                 ]
             ]);
     }

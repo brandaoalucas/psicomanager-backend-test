@@ -10,6 +10,8 @@ use App\BoundedContext\Task\Application\Exception\TaskAccessDeniedException;
 use App\BoundedContext\Task\Domain\Repository\TaskRepository;
 use App\BoundedContext\Iam\Domain\Entity\User;
 use App\Common\Enum\ReferenceType;
+use App\Helpers\Logger\Logger;
+use Illuminate\Support\Facades\DB;
 
 class DeleteTaskCommandHandler
 {
@@ -19,6 +21,13 @@ class DeleteTaskCommandHandler
     ) {}
 
     public function handle(DeleteTaskCommand $command): int
+    {
+        Logger::started(compact('command'));
+
+        return DB::transaction(fn() => $this->delete($command));
+    }
+
+    private function delete(DeleteTaskCommand $command): int
     {
         $task = $this->taskRepository->findById($command->taskId);
 
@@ -32,9 +41,8 @@ class DeleteTaskCommandHandler
 
         $this->createAuditLog($task, $command->loggedUser);
 
-        $this->taskRepository->delete($taskId);
+        return $task->delete();
     }
-
     private function createAuditLog($task, User $loggedUser): void
     {
         $this->createAuditLogCommandHandler->handle(new CreateAuditLogCommand(
