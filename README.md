@@ -50,7 +50,7 @@ app/BoundedContext/{Context}/
 │   ├── Entity/           # Entidades de Domínio
 │   ├── Repository/       # Interfaces de Repositório
 │   ├── Enum/             # Enums de Domínio
-│   └── ValueObject/      # Value Objects
+│   └── EntityFactory/    # Factory de entities
 └── Infrastructure/
     ├── Inbound/Http/     # Controllers, Requests, Middleware
     └── Outbound/         # Repositórios, External Services
@@ -212,7 +212,7 @@ Após inicializar o projeto, os seguintes serviços estarão disponíveis:
 
 ```json
 {
-    "username": "admin",
+    "email": "admin@test.com",
     "password": "123456"
 }
 ```
